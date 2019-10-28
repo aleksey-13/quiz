@@ -11,7 +11,8 @@ const AnswersList = (props) => (
                 <AnswerItem 
                     key={Math.floor(Math.random() * 10000)}
                     answer={answer} 
-                    onAnswerClick={props.onAnswerClick}/>
+                    onAnswerClick={props.onAnswerClick}
+                    state={props.state ? props.state[answer.id] : null}/>
             );
         }) }
     </ul>

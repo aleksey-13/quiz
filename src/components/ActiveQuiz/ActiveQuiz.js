@@ -5,21 +5,23 @@ import AnswersList from './AnswersList/AnswersList';
 import classes from './ActiveQuiz.module.css';
 
 const ActiveQuiz = (props) => {
+    const {question, answers, onAnswerClick, quizLength, answerNumber, state} = props;
     return (
         <div className={classes.ActiveQuiz}>
             <p className={classes.Question}>
                 <span>
-                    <strong>3.</strong>
+                    <strong>{answerNumber}.</strong>
                     &nbsp;
-                    {props.question}
+                    {question}
                 </span>
 
-                <small>4 of 12</small>
+                <small>{answerNumber} of {quizLength}</small>
             </p>
 
             <AnswersList 
-                answers={props.answers}
-                onAnswerClick={props.onAnswerClick}/>
+                answers={answers}
+                onAnswerClick={onAnswerClick}
+                state={state}/>
         </div>
     );
 }
