@@ -1,15 +1,33 @@
 import React, {Component} from 'react';
+import {NavLink} from 'react-router-dom';
 
 import Backdrop from '../../UI/Backdrop/Backdrop';
 
 import classes from './Drawer.module.css';
-import { is } from '@babel/types';
 
-const liks = [1, 2, 3]
+const links = [
+    {to: '/', label: 'Список', exact: true},
+    {to: '/auth', label: 'Авторизация', exact: false},
+    {to: '/quiz-creator', label: 'Создать тест', exact: false}
+
+]
 export default class Drawer extends Component {
 
     renderLinks() {
-        return liks.map((el) => <li><a>Link {el}</a></li>)
+        return links.map((link) => {
+            return (
+                <li key={Math.floor(Math.random() * 1000)}>
+                    <NavLink
+                        to={link.to}
+                        exact={link.exact}
+                        activeClassName={classes.active} 
+                        onClick={this.props.onClose}
+                    >
+                        {link.label}
+                    </NavLink>
+                </li>
+            );
+        });
     }
 
     render() {
