@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import is from 'is_js';
+import axios from 'axios';
 
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input'
@@ -38,12 +39,34 @@ export default class Auth extends Component {
         }
     }
 
-    loginHandler = () => {
-
+    loginHandler = async () => {
+        const { email, password } = this.state.formControls;
+        const authData = {
+            email: email.value,
+            password: password.value,
+            returnSecureToken: true
+        }
+        try {
+            const responce = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBDZie4UMExKF-PA_JaE6SNoC7kc6Lk4cc`, authData);
+            console.log(responce);
+        } catch(e) {
+            console.log(e)
+        }
     }
 
-    registerHandler = () => {
-
+    registerHandler = async () => {
+        const { email, password } = this.state.formControls;
+        const authData = {
+            email: email.value,
+            password: password.value,
+            returnSecureToken: true
+        }
+        try {
+            const responce = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBDZie4UMExKF-PA_JaE6SNoC7kc6Lk4cc`, authData);
+            console.log(responce);
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     submitHandler = (event) => event.preventDefault();
