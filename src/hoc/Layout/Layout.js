@@ -1,50 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import MenuToggle from '../../components/Nabigation/MenuToggle/MenuToggle';
-import Drawer from '../../components/Nabigation/Drawer/Drawer';
+import MenuToggle from "../../components/Navigation/MenuToggle/MenuToggle";
+import Drawer from "../../components/Navigation/Drawer/Drawer";
 
-import classes from './Layout.module.css'
+import classes from "./Layout.module.css";
 
-class Layout extends Component {
+export default class Layout extends Component {
+  state = {
+    menu: false
+  };
 
-    state = {
-        showMenu: false
-    }
+  toggleMenuHandler = () => {
+    this.setState(({ menu }) => {
+      const menuHandler = menu;
+      return {
+        menu: !menuHandler
+      };
+    });
+  };
 
-    toggleMenuHandler = () => {
-        this.setState(({showMenu}) => {
-            const menu = showMenu;
+  render() {
+    const { menu } = this.state;
 
-            return {
-                showMenu: !menu
-            }
-        });
-    }
-
-    menuCloseHandler = () => {
-        this.setState({
-            showMenu: false
-        })
-    }
-    render() {
-        const { showMenu } = this.state;
-
-        return (
-            <div className={classes.Layout}>
-
-                <Drawer isOpen={showMenu} onClose={this.menuCloseHandler}/>
-
-                <MenuToggle 
-                    onToggle={this.toggleMenuHandler}
-                    isOpen={showMenu}
-                />
-
-                <main>
-                    { this.props.children }
-                </main>
-            </div>
-        )
-    }
+    return (
+      <div className={classes.Layout}>
+        <Drawer isOpen={menu} onClose={this.toggleMenuHandler} />
+        <MenuToggle onToggle={this.toggleMenuHandler} isOpen={menu} />
+        <main>{this.props.children}</main>
+      </div>
+    );
+  }
 }
-
-export default Layout;

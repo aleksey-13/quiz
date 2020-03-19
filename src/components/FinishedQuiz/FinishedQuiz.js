@@ -1,49 +1,60 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
-import Button from '../UI/Button/Button';
+import Button from "../UI/Button/Button";
 
-import classes from './FinishedQuiz.module.css';
+import classes from "./FinishedQuiz.module.css";
 
-const FinishedQuiz = ({ results, quiz, onRetry }) => {
-    const successCounter = Object.keys(results).reduce((total, key) => {
-        if (results[key] === 'success'){
-             total++ 
-        }
+const FinishedQuizItem = ({ id, question, icon }) => (
+  <li>
+    <strong>{id}.</strong>&nbsp; {question}
+    <FontAwesomeIcon icon={icon.name} className={icon.cls} />
+  </li>
+);
 
-        return total;
-    }, 0);
+const FinishedQuiz = props => {
+  const { results, quiz, onRetry } = props;
+  const listContent = quiz.map(({ question, id }) => {
+    const icon = {
+      name: faCheck,
+      cls: classes.success
+    };
+
+    if (results[id] === "error") {
+      icon.name = faTimes;
+      icon.cls = classes.error;
+    }
 
     return (
-        <div className={classes.FinishedQuiz}>
-            <ul>
-                { quiz.map((quizItem, index) => {
-                     const cls = [
-                        'fa',
-                        results[quizItem.id] === 'error' ? 'fa-times' : 'fa-check',
-                        classes[results[quizItem.id]]
-                    ];
+      <FinishedQuizItem key={id} index={id} question={question} icon={icon} />
+    );
+  });
+  const rightAnswers = Object.keys(results).filter(
+    answer => results[answer] === "success"
+  );
 
-                    return (
-                        <li key={Math.floor(Math.random()*1000)}>
-                            <strong>{index + 1}</strong>.&nbsp;
-                            {quizItem.question}
-                            <i className={cls.join(' ')}/>
-                        </li>
-                    );
-                }) }
-            </ul>
+  return (
+    <div className={classes.FinishedQuiz}>
+      <ul>{listContent}</ul>
 
-            <p>Правильно {successCounter} из {quiz.length}</p>
+      <p>
+        Правильно {rightAnswers.length} из {quiz.length}
+      </p>
 
-            <div>
-                <Button onClick={onRetry} type="primary">Повторить</Button>
-                <Link to="/">
-                    <Button type="success">Перейти в список тестов</Button>
-                </Link>
-            </div>
-        </div>
-    )
-}
+      <div>
+        <Button onClick={onRetry} type="primary">
+          Повторить
+        </Button>
+        <Link to={"/"}>
+          <Button onClick={() => {}} type="success">
+            Перейти в список тестов
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 export default FinishedQuiz;
