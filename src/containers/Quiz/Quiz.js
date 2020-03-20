@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import axios from "../../axios/axios-quiz";
 
 import ActiveQuiz from "../../components/ActiveQuiz/ActiveQuiz";
 import FinishedQuiz from "../../components/FinishedQuiz/FinishedQuiz";
+import Loader from "../../components/UI/Loader/Loader";
 
 import classes from "./Quiz.module.css";
 
@@ -45,10 +47,26 @@ export default class Quiz extends Component {
           { id: 4, text: "А она была?" }
         ]
       }
-    ]
+    ],
+    loading: true
   };
 
-  componentDidMount() {}
+  async componentDidMount() {
+    try {
+      const { data } = await axios.get(
+        `quizes/${this.props.match.params.id}.json`
+      );
+
+      const quiz = data;
+
+      this.setState({
+        quiz,
+        loading: false
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   onAnswerClickHandler = answerId => {
     const { quiz, activeQuestion, answerState, results } = this.state;
@@ -115,19 +133,23 @@ export default class Quiz extends Component {
       activeQuestion,
       answerState,
       isFinished,
-      results
+      results,
+      loading
     } = this.state;
 
-    const content = !isFinished ? (
-      <ActiveQuiz
-        answers={quiz[activeQuestion].answers}
-        question={quiz[activeQuestion].question}
-        onAnswerClick={this.onAnswerClickHandler}
-        quizLength={quiz.length}
-        answerNumber={activeQuestion + 1}
-        state={answerState}
-      />
-    ) : null;
+    const loader = loading ? <Loader /> : null;
+
+    const content =
+      !isFinished && !loading ? (
+        <ActiveQuiz
+          answers={quiz[activeQuestion].answers}
+          question={quiz[activeQuestion].question}
+          onAnswerClick={this.onAnswerClickHandler}
+          quizLength={quiz.length}
+          answerNumber={activeQuestion + 1}
+          state={answerState}
+        />
+      ) : null;
 
     const finished = isFinished ? (
       <FinishedQuiz results={results} quiz={quiz} onRetry={this.retryHandler} />
@@ -137,6 +159,7 @@ export default class Quiz extends Component {
       <div className={classes.Quiz}>
         <div className={classes.QuizWrapper}>
           <h1>Атветь!</h1>
+          {loader}
           {content}
           {finished}
         </div>
