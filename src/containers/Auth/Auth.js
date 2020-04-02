@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
+import { auth } from "../../store/actions/auth";
 
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
@@ -11,7 +12,7 @@ import {
 
 import classes from "./Auth.module.css";
 
-export default class Auth extends Component {
+class Auth extends Component {
   state = {
     isFormValid: false,
     formControls: {
@@ -40,38 +41,20 @@ export default class Auth extends Component {
     }
   };
 
-  loginHandler = async () => {
+  loginHandler = () => {
     const {
       formControls: { email, password }
     } = this.state;
-    const authData = {
-      email: email.value,
-      password: password.value,
-      returnSecureToken: true
-    };
 
-    const response = await axios.post(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAfIDJCHN1XSanAy8IpXTn4G2Eh7uZ-EuY",
-      authData
-    );
-    console.log(response);
+    this.props.auth(email.value, password.value, true);
   };
 
-  registerHandler = async () => {
+  registerHandler = () => {
     const {
       formControls: { email, password }
     } = this.state;
-    const authData = {
-      email: email.value,
-      password: password.value,
-      returnSecureToken: true
-    };
 
-    const response = await axios.post(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAfIDJCHN1XSanAy8IpXTn4G2Eh7uZ-EuY",
-      authData
-    );
-    console.log(response);
+    this.props.auth(email.value, password.value, false);
   };
 
   submitHandler(event) {
@@ -141,3 +124,11 @@ export default class Auth extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Auth);

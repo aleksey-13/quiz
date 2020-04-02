@@ -5,17 +5,24 @@ import Backdrop from "../../UI/Backdrop/Backdrop";
 
 import classes from "./Drawer.module.css";
 
-const Drawer = ({ isOpen, onClose }) => {
-  const links = [
-    { label: "Список", to: "/", exact: true },
-    { label: "Авторизация", to: "/auth", exact: false },
-    { label: "Создать тест", to: "/quiz-reactor", exact: false }
-  ];
+const Drawer = ({ isOpen, onClose, isAuthenticated }) => {
+  let links = [{ label: "Список", to: "/", exact: true }];
   const cls = [classes.Drawer];
   const backdrop = isOpen ? <Backdrop onClose={onClose} /> : null;
 
   if (!isOpen) {
     cls.push(classes.close);
+  }
+
+  if (isAuthenticated) {
+    const authenticatedLinks = [
+      { label: "Создать тест", to: "/quiz-reactor", exact: false },
+      { label: "Выход", to: "/logout", exact: false }
+    ];
+
+    links = [...links, ...authenticatedLinks];
+  } else {
+    links.push({ label: "Авторизация", to: "/auth", exact: false });
   }
 
   const renderLinks = links.map(({ label, exact, to }) => (
